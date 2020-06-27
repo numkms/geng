@@ -10,6 +10,7 @@ Game::Game() {
     this->isRunning = false;
     MapBuilder mapBuilder = MapBuilder();
     this->map = mapBuilder.BuildMap();
+    this->platform = new Platform();
 }
 
 Game::~Game() {
@@ -60,11 +61,21 @@ void Game::ProcessInput() {
              isRunning = false;
              break;
          }
+         
          case SDL_KEYDOWN: {
              if(event.key.keysym.sym == SDLK_ESCAPE) {
                  isRunning = false;
+             } 
+
+             if(event.key.keysym.sym == SDLK_RIGHT) {
+                 this->platform->MoveRight();
+             }
+
+             if(event.key.keysym.sym == SDLK_LEFT) {
+                 this->platform->MoveLeft();
              }
          }
+         
          default: {
              break;
          }
@@ -96,9 +107,24 @@ void Game::Render() {
             block.GetColor().a
         );
         
-        SDL_RenderFillRect(renderer, &projectile);
-        
+        SDL_RenderFillRect(renderer, &projectile);        
     }
+
+    SDL_SetRenderDrawColor(
+            renderer,
+            102,
+            205,
+            170,
+            255
+    );
+    SDL_Rect platformTile {
+        (int) this->platform->GetX(),
+        (int) this->platform->GetY(),
+        (int) this->platform->GetWidth(),
+        (int) this->platform->GetHeight()
+    };
+
+    SDL_RenderFillRect(renderer, &platformTile);        
 
     SDL_RenderPresent(renderer);
 }

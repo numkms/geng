@@ -4,10 +4,12 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include "./Map.h"
+#include "./Platform.h"
 
 class Game {
     private:
         Map * map; 
+        Platform * platform;
         bool isRunning;
         SDL_Renderer *renderer;
         SDL_Window *window;

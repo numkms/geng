@@ -3,7 +3,7 @@
 #include "./Color.cpp"
 
 class Rectangle {
-    private:
+    protected:
         float x;
         float y;
         float width;
