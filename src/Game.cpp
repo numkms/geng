@@ -2,9 +2,14 @@
 #include "./Constants.h"
 #include "./Game.h"
 #include "../lib/glm/glm.hpp"
+#include "./MapBuilder.h"
+#include "./Map.h"
+
 
 Game::Game() {
     this->isRunning = false;
+    MapBuilder mapBuilder = MapBuilder();
+    this->map = mapBuilder.BuildMap();
 }
 
 Game::~Game() {
@@ -15,13 +20,10 @@ bool Game::IsRunning() const {
     return this->isRunning;
 }
 
-glm::vec2 projectilePos = glm::vec2(0.0f, 0.0f);
-glm::vec2 projectileVelocity = glm::vec2(20.0f, 20.0f);
-
 void Game::Initialize(int width, int height) {
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cerr << "Error initializing SDL." << std::endl;
-        return;
+          return;
     }
 
     window = SDL_CreateWindow(
@@ -73,15 +75,31 @@ void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
     SDL_RenderClear(renderer);
 
-    SDL_Rect projectile {
-        (int) projectilePos.x,
-        (int) projectilePos.y,
-        10,
-        10
-    };
 
-    SDL_SetRenderDrawColor(renderer, 255,255,255,255);
-    SDL_RenderFillRect(renderer, &projectile);
+
+    for (int i = 0; i < 90; i++) {
+        Rectangle block = map->blocks[i]; 
+        block.GetX();
+
+        SDL_Rect projectile {
+            (int) block.GetX(),
+            (int) block.GetY(),
+            (int) block.GetWidth(),
+            (int) block.GetHeight()
+        };
+
+        SDL_SetRenderDrawColor(
+            renderer,
+            block.GetColor().r,
+            block.GetColor().g,
+            block.GetColor().b,
+            block.GetColor().a
+        );
+        
+        SDL_RenderFillRect(renderer, &projectile);
+        
+    }
+
     SDL_RenderPresent(renderer);
 }
 
@@ -101,10 +119,10 @@ void Game::Update() {
      
      deltaTime = deltaTime > 0.05f ? 0.05f : deltaTime;
 
-     projectilePos = glm::vec2(
-        projectilePos.x + projectileVelocity.x * deltaTime,
-        projectilePos.y + projectileVelocity.y * deltaTime
-     );
+    //  projectilePos = glm::vec2(
+    //     projectilePos.x + projectileVelocity.x * deltaTime,
+    //     projectilePos.y + projectileVelocity.y * deltaTime
+    //  );
 } 
 
 void Game::Destroy() {

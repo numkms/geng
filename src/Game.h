@@ -3,9 +3,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include "./Map.h"
 
 class Game {
     private:
+        Map * map; 
         bool isRunning;
         SDL_Renderer *renderer;
         SDL_Window *window;
