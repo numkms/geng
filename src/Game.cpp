@@ -11,6 +11,8 @@ Game::Game() {
     MapBuilder mapBuilder = MapBuilder();
     this->map = mapBuilder.BuildMap();
     this->platform = new Platform();
+    this->ball = new Ball(this->platform->GetX(), this->platform->GetY() - this->platform->GetHeight() - 2);
+    this->arkanoid = new Arkanoid(this->map, this->platform, this->ball);
 }
 
 Game::~Game() {
@@ -42,6 +44,7 @@ void Game::Initialize(int width, int height) {
     }
 
     renderer = SDL_CreateRenderer(window, -1, 0);
+    this->scoreboard = new Scoreboard(renderer);
 
     if(!renderer) {
         std::cerr << "Error creating SDL renderer" << std::endl;
@@ -61,7 +64,7 @@ void Game::ProcessInput() {
              isRunning = false;
              break;
          }
-         
+
          case SDL_KEYDOWN: {
              if(event.key.keysym.sym == SDLK_ESCAPE) {
                  isRunning = false;
@@ -73,6 +76,10 @@ void Game::ProcessInput() {
 
              if(event.key.keysym.sym == SDLK_LEFT) {
                  this->platform->MoveLeft();
+             }
+
+             if(event.key.keysym.sym == SDLK_RETURN) {
+                 this->arkanoid->RunGame();
              }
          }
          
@@ -86,28 +93,26 @@ void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
     SDL_RenderClear(renderer);
 
-
-
     for (int i = 0; i < 90; i++) {
-        Rectangle block = map->blocks[i]; 
-        block.GetX();
+            Rectangle block = map->blocks[i]; 
+            if(!block.hidden) {
+                SDL_Rect projectile {
+                (int) block.GetX(),
+                (int) block.GetY(),
+                (int) block.GetWidth(),
+                (int) block.GetHeight()
+            };
 
-        SDL_Rect projectile {
-            (int) block.GetX(),
-            (int) block.GetY(),
-            (int) block.GetWidth(),
-            (int) block.GetHeight()
-        };
-
-        SDL_SetRenderDrawColor(
-            renderer,
-            block.GetColor().r,
-            block.GetColor().g,
-            block.GetColor().b,
-            block.GetColor().a
-        );
-        
-        SDL_RenderFillRect(renderer, &projectile);        
+            SDL_SetRenderDrawColor(
+                renderer,
+                block.GetColor().r,
+                block.GetColor().g,
+                block.GetColor().b,
+                block.GetColor().a
+            );
+            
+            SDL_RenderFillRect(renderer, &projectile);
+        } 
     }
 
     SDL_SetRenderDrawColor(
@@ -117,6 +122,7 @@ void Game::Render() {
             170,
             255
     );
+
     SDL_Rect platformTile {
         (int) this->platform->GetX(),
         (int) this->platform->GetY(),
@@ -126,10 +132,32 @@ void Game::Render() {
 
     SDL_RenderFillRect(renderer, &platformTile);        
 
+
+    SDL_SetRenderDrawColor(
+            renderer,
+            255,
+            255,
+            255,
+            255
+    );
+    
+    SDL_Rect ballTile {
+        (int) this->ball->GetX(),
+        (int) this->ball->GetY(),
+        (int) this->ball->GetWidth(),
+        (int) this->ball->GetHeight()
+    };
+
+    SDL_RenderFillRect(renderer, &ballTile);        
+
     SDL_RenderPresent(renderer);
 }
 
 void Game::Update() {
+    if(this->arkanoid->IsGameStarted()) {
+        this->arkanoid->MoveBall();
+        this->scoreboard->WriteData("Lives: ");
+    }
      //Waiting
     //  while(!SDL_TICKS_PASSED(SDL_GetTicks(), ticksLastFrame + FRAME_TARGET_TIME));
 

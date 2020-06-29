@@ -5,11 +5,18 @@
 #include <SDL2/SDL_ttf.h>
 #include "./Map.h"
 #include "./Platform.h"
+#include "./Ball.cpp"
+#include "./Arkanoid.h"
+#include "./Scoreboard.h"
 
 class Game {
     private:
         Map * map; 
         Platform * platform;
+        Ball * ball;
+        Arkanoid * arkanoid;
+        Scoreboard * scoreboard;
+        
         bool isRunning;
         SDL_Renderer *renderer;
         SDL_Window *window;

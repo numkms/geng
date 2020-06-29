@@ -1,6 +1,7 @@
 #ifndef RECTANGLE_H
 #define RECTANGLE_H
 #include "./Color.cpp"
+#include <SDL2/SDL.h>
 
 class Rectangle {
     protected:
@@ -12,6 +13,7 @@ class Rectangle {
     public:
         Rectangle();
         ~Rectangle();
+        bool hidden = false; 
         void SetFrame(float x, float y, float width, float height, Color color) {
             this->height = height;
             this->width = width;
@@ -24,6 +26,41 @@ class Rectangle {
         Color GetColor() { return this->color; };
         float GetX() { return this->x; };
         float GetY() { return this->y; };
+        
+        float GetMinX() {
+            return this->x - this->width / 2;
+        };
+        
+        float GetMaxX() {
+            return this->x + this->width / 2;
+        };
+        
+        float GetMinY() {
+            return this->y - this->height / 2;
+        };
+        
+        float GetMaxY() {
+            return this->y + this->height / 2;
+        };
+
+        bool isCrossingOverBy(Rectangle * rectangle) {
+            const SDL_Rect a = {
+              (int) this->x,
+              (int) this->y,
+              (int) this->width,
+              (int) this->height
+            };
+
+            const SDL_Rect b = {
+               (int) rectangle->GetX(), 
+               (int) rectangle->GetY(), 
+               (int) rectangle->GetWidth(), 
+               (int) rectangle->GetHeight(), 
+            };
+            return SDL_HasIntersection(&a,&b) == SDL_TRUE;
+        }
+
+
 };
 
     
