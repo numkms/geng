@@ -2,6 +2,13 @@
 #include "./Constants.h"
 #include "./Game.h"
 #include "../lib/glm/glm.hpp"
+#include "Components/TransformComponent.h"
+#include "Components/SpriteComponent.h"
+#include "AssetManager.h"
+
+EntityManager manager;
+AssetManager* Game::assetManager = new AssetManager(&manager);
+SDL_Renderer* Game::renderer;
 
 Game::Game() {
     this->isRunning = false;
@@ -14,9 +21,6 @@ Game::~Game() {
 bool Game::IsRunning() const {
     return this->isRunning;
 }
-
-glm::vec2 projectilePos = glm::vec2(0.0f, 0.0f);
-glm::vec2 projectileVelocity = glm::vec2(20.0f, 20.0f);
 
 void Game::Initialize(int width, int height) {
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -45,10 +49,36 @@ void Game::Initialize(int width, int height) {
         return;
     }
 
+    LoadLevel(0);
+
     isRunning = true;
     return;
 }
 
+void Game::LoadLevel(int levelNumber) {
+    
+    assetManager->AddTexture("tank-image", std::string("./assets/images/tank-big-right.png").c_str());
+    assetManager->AddTexture("chopper-image", std::string("./assets/images/chopper-spritesheet.png").c_str());
+
+    Entity& tankEntity(manager.AddEntity("tank"));
+    tankEntity.AddComponent<TransformComponent>(0, 0, 20, 20, 32, 32, 1);
+    tankEntity.AddComponent<SpriteComponent>("tank-image");
+
+    Entity& chopperEntity(manager.AddEntity("chopper"));
+    tankEntity.AddComponent<TransformComponent>(240, 106, 0, 0, 32, 32, 1);
+    tankEntity.AddComponent<SpriteComponent>("chopper-image", 2, 90, true, false);
+    
+    // Entity& entityB(manager.AddEntity("projecttileB"));
+    // entityB.AddComponent<TransformComponent>(0, 0, 20, 20, 32, 32, 1);
+    
+    // Entity&  entityC(manager.AddEntity("projecttileC"));
+    // entityC.AddComponent<TransformComponent>(0,WINDOW_HEIGHT - 32, 20, -20, 32, 32, 1);
+
+    // Entity& entityD(manager.AddEntity("projecttileD"));
+    // entityD.AddComponent<TransformComponent>(WINDOW_WIDTH - 32 , WINDOW_HEIGHT -32, -20, -20, 32, 32, 1);
+
+    manager.PrintEntityTree();
+}
 
 void Game::ProcessInput() {
      SDL_Event event;
@@ -73,15 +103,14 @@ void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
     SDL_RenderClear(renderer);
 
-    SDL_Rect projectile {
-        (int) projectilePos.x,
-        (int) projectilePos.y,
-        10,
-        10
-    };
+
+    if(manager.HasNoEntities()) {
+        return;
+    }
+
+    manager.Render();
 
     SDL_SetRenderDrawColor(renderer, 255,255,255,255);
-    SDL_RenderFillRect(renderer, &projectile);
     SDL_RenderPresent(renderer);
 }
 
@@ -100,11 +129,8 @@ void Game::Update() {
      ticksLastFrame = SDL_GetTicks();
      
      deltaTime = deltaTime > 0.05f ? 0.05f : deltaTime;
-
-     projectilePos = glm::vec2(
-        projectilePos.x + projectileVelocity.x * deltaTime,
-        projectilePos.y + projectileVelocity.y * deltaTime
-     );
+     
+     manager.Update(deltaTime);
 } 
 
 void Game::Destroy() {
