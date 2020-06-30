@@ -1,7 +1,9 @@
 # GENG
 Geng is an another 2d game engine. 
 Geng is just my pet project and nothing more but you can help me with it by issue or pull-request
-
+### Based on
+* GLM for math
+* SDL for output 
 ### Features (today and planned)
 - [x] Layering - each sprite can be render with selected layer. You can create your own layers in Constatns.h file right now.
 - [x] Manager -> Entity -> Components structure, so you can write your own components for entities and use it in any entity what you want.
