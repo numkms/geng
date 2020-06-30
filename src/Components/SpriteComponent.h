@@ -1,9 +1,9 @@
-#ifndef SPRITECOMPONENT_H
-#define SPRITECOMPONENT_H
-
+#ifndef SPRITE_COMPONENT_H
+#define SPRITE_COMPONENT_H
+#include "../Component.h"
 #include <SDL2/SDL.h>
-#include "../TextureManager.h"
 #include "../AssetManager.h"
+#include "../TextureManager.h"
 #include "../Animation.h"
 
 class SpriteComponent: public Component {
@@ -12,27 +12,20 @@ class SpriteComponent: public Component {
         SDL_Texture* texture;
         SDL_Rect sourceRectangle;
         SDL_Rect destinationRectangle;
+
         bool isAnimated;
         int numFrames;
         int animationSpeed;
         bool isFixed;
         std::map<std::string, Animation> animations;
         std::string currentAnimationName;
-        unsigned int animationIndex = 0;
-
-    public:
+        unsigned int animationIndex;
+    public: 
         SDL_RendererFlip spriteFlip = SDL_FLIP_NONE;
-
-        SpriteComponent(std::string assetTextureId) {
-            this->isAnimated = false;
-            this->isFixed = false;
-            SetTexture(assetTextureId);
-        }
-
-        SpriteComponent(std::string assetTextureId, bool isFixed) {
-            this->isAnimated = false;
-            this->isFixed = isFixed;
-            SetTexture(assetTextureId);
+        SpriteComponent(const char* filePath) {
+            isAnimated = false;
+            isFixed = false;
+            SetTexture(filePath);
         }
 
         SpriteComponent(std::string id, int numFrames, int animationSpeed, bool hasDirections, bool isFixed) {
@@ -41,11 +34,12 @@ class SpriteComponent: public Component {
             this->animationSpeed = animationSpeed;
             this->isFixed = isFixed;
 
-            if (hasDirections) {
+            if(hasDirections) {
                 Animation downAnimation = Animation(0, numFrames, animationSpeed);
                 Animation rightAnimation = Animation(1, numFrames, animationSpeed);
                 Animation leftAnimation = Animation(2, numFrames, animationSpeed);
                 Animation upAnimation = Animation(3, numFrames, animationSpeed);
+                
                 animations.emplace("DownAnimation", downAnimation);
                 animations.emplace("RightAnimation", rightAnimation);
                 animations.emplace("LeftAnimation", leftAnimation);
@@ -57,13 +51,14 @@ class SpriteComponent: public Component {
                 animations.emplace("SingleAnimation", singleAnimation);
                 this->animationIndex = 0;
                 this->currentAnimationName = "SingleAnimation";
+
             }
 
             Play(this->currentAnimationName);
 
             SetTexture(id);
         }
-
+        
         void Play(std::string animationName) {
             numFrames = animations[animationName].numFrames;
             animationIndex = animations[animationName].index;
@@ -84,20 +79,21 @@ class SpriteComponent: public Component {
         }
 
         void Update(float deltaTime) override {
-            if (isAnimated) {
+            if(isAnimated) {
                 sourceRectangle.x = sourceRectangle.w * static_cast<int>((SDL_GetTicks() / animationSpeed) % numFrames);
             }
             sourceRectangle.y = animationIndex * transform->height;
 
-            destinationRectangle.x = static_cast<int>(transform->position.x);
-            destinationRectangle.y = static_cast<int>(transform->position.y);
+            destinationRectangle.x = static_cast<int>(transform->position.x) - (isFixed ? 0 : Game::camera.x);
+            destinationRectangle.y = static_cast<int>(transform->position.y) - (isFixed ? 0 : Game::camera.y);
             destinationRectangle.w = transform->width * transform->scale;
             destinationRectangle.h = transform->height * transform->scale;
+
         }
 
         void Render() override {
             TextureManager::Draw(texture, sourceRectangle, destinationRectangle, spriteFlip);
         }
-};
 
+};
 #endif

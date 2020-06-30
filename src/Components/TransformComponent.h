@@ -25,8 +25,25 @@ class TransformComponent: public Component {
         }
 
         void Update(float deltaTime) override {
-            position.x += velocity.x * deltaTime;
-            position.y += velocity.y * deltaTime;
+            float nextPositionX = position.x + velocity.x * deltaTime;
+            float nextPositionY = position.y + velocity.y * deltaTime;
+            if(nextPositionX >= WINDOW_WIDTH) {
+                nextPositionX = position.x;
+            } 
+            if(nextPositionX <= 0) {
+                nextPositionX = position.x;
+            }
+
+            if(nextPositionY >= WINDOW_HEIGHT) {
+                nextPositionY = position.y;
+            } 
+
+            if(nextPositionY <= 0) {
+                nextPositionY = position.y;
+            }
+
+            position.x = nextPositionX;
+            position.y = nextPositionY;
         }
 
         void Render() override {
