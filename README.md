@@ -30,3 +30,7 @@ Geng is just my pet project and nothing more but you can help me with it by issu
 - [ ] Object configurator 
 - [ ] IDE Plugins
 - [ ] Console toolkit for generating code Components
+
+### How to compile and run:
+$ make 
+$ make run
