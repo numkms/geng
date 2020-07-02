@@ -5,8 +5,10 @@ Geng is just my pet project and nothing more but you can help me with it by issu
 * GLM for math
 * SDL for output 
 ### Features (today and planned)
+- [x] Scenes - Make scenes with entities and manage them via scene manager.
 - [x] Layering - each sprite can be render with selected layer. You can create your own layers in Constatns.h file right now.
-- [x] Manager -> Entity -> Components structure, so you can write your own components for entities and use it in any entity what you want.
+- [x] Entities - create entity for everything and add needed components
+- [x] Components - use default components or create your own 
 - [x] Components from the box: 
 * ColliderComponent - to check collisions of your objects.
 * KeyboardComponent - (will be rewrited soon) now you can move your object with keyboard keys with this component.
