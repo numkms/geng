@@ -7,7 +7,7 @@
 #include "../EntityManager.h"
 #include "../TextureManager.h"
 #include "../AssetManager.h"
-
+#include "../SceneManager.h"
 class TileComponent: public Component {
     public: 
         SDL_Texture *texture;
@@ -16,7 +16,7 @@ class TileComponent: public Component {
         glm::vec2 position;
 
         TileComponent(int sourceRectX, int sourceRectY, int x, int y, int tileSize, int tileScale, std::string assetTextureId) {
-            texture = Game::assetManager->GetTexture(assetTextureId);
+            texture = this->owner->GetManager()->GetScene()->GetAssetManager().GetTexture(assetTextureId);
             sourceRectangle.x = sourceRectX;
             sourceRectangle.y = sourceRectY;
             sourceRectangle.w = tileSize;

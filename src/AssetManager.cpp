@@ -1,6 +1,6 @@
 #include "AssetManager.h"
 
-AssetManager::AssetManager(EntityManager* manager): manager(manager) {
+AssetManager::AssetManager(Scene* scene): scene(scene) {
 
 }
 

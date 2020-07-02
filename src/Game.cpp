@@ -4,9 +4,11 @@
 #include "../lib/glm/glm.hpp"
 #include "AssetManager.h"
 #include "Map.h"
+#include "Arkanoid/ArkanoidMenuScene.h"
+#include "Arkanoid/ArkanoidGameScene.h"
+#include "SceneManager.h"
+SceneManager sceneManager;
 
-EntityManager manager;
-AssetManager* Game::assetManager = new AssetManager(&manager);
 SDL_Renderer* Game::renderer;
 SDL_Event Game::event;
 SDL_Rect Game::camera = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
@@ -54,14 +56,11 @@ void Game::Initialize(int width, int height) {
         std::cerr << "Error creating SDL renderer" << std::endl;
         return;
     }
-
-    LoadLevel(0);
-
+    sceneManager.AddScene<ArkanoidMenuScene>();
+    sceneManager.AddScene<ArkanoidGameScene>();
+    sceneManager.ShowScene<ArkanoidMenuScene>();
     isRunning = true;
     return;
-}
-void Game::LoadLevel(int levelNumber) {
-
 }
 
 void Game::ProcessInput() {
@@ -86,31 +85,11 @@ void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
     SDL_RenderClear(renderer);
 
-
-    if(manager.HasNoEntities()) {
-        return;
-    }
-
-    manager.Render();
+    // TODO: Here we need check do we have scenes to render or not and if not return 
+    sceneManager.Render();
 
     SDL_SetRenderDrawColor(renderer, 255,255,255,255);
     SDL_RenderPresent(renderer);
-}
-
-void Game::CheckCollisions() {
-    CollisionType collisionType = manager.CheckEntityCollisions();
-    
-    if(collisionType == PLAYER_ENEMY) {
-        ProcessGameOver();
-    }
-
-    if(collisionType == PLAYER_PROJECTILE) {
-        ProcessGameOver();
-    }
-
-    if(collisionType == PLAYER_LEVEL_COMPLETE) {
-        ProcessNextLevel(1);
-    }
 }
 
 void Game::ProcessGameOver() {
@@ -139,8 +118,7 @@ void Game::Update() {
      
      deltaTime = deltaTime > 0.05f ? 0.05f : deltaTime;
      
-     manager.Update(deltaTime);
-     CheckCollisions();
+     sceneManager.Update(deltaTime);
 } 
 
 void Game::Destroy() {

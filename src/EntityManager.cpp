@@ -2,6 +2,12 @@
 #include <iostream>
 #include "Collision.h"
 #include "Components/ColliderComponent.h"
+EntityManager::EntityManager(Scene* scene): scene(scene) {
+}
+
+Scene* EntityManager::GetScene() {
+    return this->scene;
+}
 
 void EntityManager::ClearData() {
     for(auto& entity: entities) {
@@ -22,6 +28,7 @@ void EntityManager::DestroyInactiveEntities() {
 }
 
 void EntityManager::Update(float deltaTime) {
+    DestroyInactiveEntities();
     for(auto& entity: entities) {
         entity->Update(deltaTime);
     }
@@ -36,7 +43,7 @@ void EntityManager::Render() {
 }
 
 Entity& EntityManager::AddEntity(std::string entityName, LayerType layer) {
-    Entity * entity = new Entity(*this, entityName, layer);
+    Entity * entity = new Entity(this, entityName, layer);
     entities.emplace_back(entity);
     return *entity;
 }
@@ -78,7 +85,7 @@ CollisionType EntityManager::CheckEntityCollisions() const {
 
     //Плохое решение нужно переделать на отличное от n^2
     for(auto& thisEntity: entities) {
-        std::cout << "Entities loop" << std::endl;
+        // std::cout << "Entities loop" << std::endl;
         if(thisEntity->HasComponent<ColliderComponent>()) {
             
             ColliderComponent* thisCollider = thisEntity->GetComponent<ColliderComponent>();
