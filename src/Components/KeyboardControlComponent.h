@@ -13,6 +13,7 @@ class KeyboardControlComponent: public Component {
         std::string leftKey;
         std::string rightKey;
         std::string actionKey;
+        glm::vec2 velocity;
 
         TransformComponent *transform;
         SpriteComponent *sprite;
@@ -21,12 +22,13 @@ class KeyboardControlComponent: public Component {
 
         }
 
-        KeyboardControlComponent(std::string upKey, std::string rightKey, std::string downKey, std::string leftKey, std::string actionKey) {
+        KeyboardControlComponent(std::string upKey, std::string rightKey, std::string downKey, std::string leftKey, std::string actionKey, glm::vec2 velocity) {
             this->upKey = GetSDLKeyStringCode(upKey);
             this->rightKey = GetSDLKeyStringCode(rightKey);
             this->downKey = GetSDLKeyStringCode(downKey);
             this->leftKey = GetSDLKeyStringCode(leftKey);
             this->actionKey = GetSDLKeyStringCode(actionKey);
+            this->velocity = velocity;
         }
 
         std::string GetSDLKeyStringCode(std::string key) const {
@@ -40,7 +42,10 @@ class KeyboardControlComponent: public Component {
 
         void Initialize() override {
             transform = owner->GetComponent<TransformComponent>();
-            sprite = owner->GetComponent<SpriteComponent>();
+            
+            if(owner->HasComponent<SpriteComponent>()) { 
+                sprite = owner->GetComponent<SpriteComponent>();
+            }
         }
     
 
@@ -51,25 +56,41 @@ class KeyboardControlComponent: public Component {
                 if(keyCode.compare(upKey) == 0) {
                     transform->velocity.y = -100;
                     transform->velocity.x = 0;
-                    sprite->Play("UpAnimation");
+                    if(owner->HasComponent<SpriteComponent>()) {
+                        sprite->Play("UpAnimation");
+                    } else {
+                        transform->velocity.y = velocity.y;
+                    }
                 }
 
                 if(keyCode.compare(downKey) == 0) {
                     transform->velocity.y = 100;
                     transform->velocity.x = 0;
-                    sprite->Play("DownAnimation");
+                    if(owner->HasComponent<SpriteComponent>()) {
+                        sprite->Play("DownAnimation");
+                    } else {
+                        transform->velocity.y = velocity.y * -1;
+                    }
                 }
 
                 if(keyCode.compare(leftKey) == 0) {
                     transform->velocity.y = 0;
                     transform->velocity.x = -100;
-                    sprite->Play("LeftAnimation");
+                    if(owner->HasComponent<SpriteComponent>()) {
+                        sprite->Play("DownAnimation");
+                    } else {
+                        transform->velocity.x = velocity.x * -1;
+                    }
                 }
 
                 if(keyCode.compare(rightKey) == 0) {
                     transform->velocity.y = 0;
                     transform->velocity.x = 100;
-                    sprite->Play("RightAnimation");
+                    if(owner->HasComponent<SpriteComponent>()) {
+                        sprite->Play("DownAnimation");
+                    } else {
+                        transform->velocity.x = velocity.x;
+                    }
                 }
 
                 if(keyCode.compare(actionKey) == 0) {

@@ -11,37 +11,61 @@
 #include "../Components/UILabelComponent.h"
 #include "../Components/ColliderComponent.h"
 #include "../Components/MouseControlComponent.h"
+#include "../Components/KeyboardControlComponent.h"
 
 class ArkanoidGameScene: public Scene 
 {
 private:
+     Entity* room;
      Entity* platform;
      Entity* levelLabel;
      Entity* scoreLabel;
-     
+
      std::vector<Entity*> blocks;
 public:    
     void LoadComponents() {
         GetAssetManager().AddFont("Roboto17", "./assets/fonts/Roboto/Roboto-Black.ttf", 50);
         GetAssetManager().AddFont("Roboto14", "./assets/fonts/Roboto/Roboto-Black.ttf", 30);
         
-        Entity& mainMenu(GetManager().AddEntity("", UI));
-        mainMenu.AddComponent<TransformComponent>(0, 0, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 1);
-        mainMenu.AddComponent<RectangleComponent>(WHITE_COLOR);
-        mainMenu.AddComponent<UILabelComponent>(
-            mainMenu.GetComponent<TransformComponent>()->position.x + 10, 
-            mainMenu.GetComponent<TransformComponent>()->position.y + 20, 
-            "Level 1",
+        Entity& room(GetManager().AddEntity("Room", TILEMAP));
+        room.AddComponent<TransformComponent>(0, 0, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 1);
+        room.AddComponent<RectangleComponent>(WHITE_COLOR);
+
+        Entity& levelLabel(GetManager().AddEntity("LevelLabel", UI));
+        levelLabel.AddComponent<UILabelComponent>(
+            10, 
+            10, 
+            "LEVEL 1",
             "Roboto14",
             BLUE_COLOR,
             RED_COLOR
         );
 
+        Entity& scoreLabel(GetManager().AddEntity("Score label", UI));
+        scoreLabel.AddComponent<UILabelComponent>(
+            10, 
+            45, 
+            "SCORE 0",
+            "Roboto14",
+            BLUE_COLOR,
+            RED_COLOR
+        );
+
+
+
+        Entity& platform(GetManager().AddEntity("Platform", PLAYER));
+        platform.AddComponent<TransformComponent>(WINDOW_WIDTH / 2 - 25, WINDOW_HEIGHT - 20, 0, 0, 150, 20, 1);
+        platform.AddComponent<RectangleComponent>(RED_COLOR);
+        platform.AddComponent<KeyboardControlComponent>(" ", "right", " ", "left", "space", glm::vec2(50, 0));
+        MouseControlComponent& platformMouseControlComponent(platform.AddComponent<MouseControlComponent>());
+        platformMouseControlComponent.BindMouseXToTransform();
+
+
     }
 
     void Initialize() override {
         Scene::Initialize();
-        LoadComponents()
+        LoadComponents();
     }
 
     
