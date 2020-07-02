@@ -20,7 +20,6 @@ public:
         newScene->name = typeid(T).name();
         scenes.emplace_back(newScene);
         sceneByType[&typeid(*newScene)] = newScene;
-        newScene->Initialize();
         return *newScene;
     }
 
@@ -29,6 +28,7 @@ public:
         HideAllScenes();
         T* scene =  static_cast<T*>(sceneByType[&typeid(T)]);        
         scene->isHidden = false;
+        scene->Initialize();
     }
 
     void HideAllScenes() {

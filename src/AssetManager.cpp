@@ -1,5 +1,4 @@
 #include "AssetManager.h"
-
 AssetManager::AssetManager(Scene* scene): scene(scene) {
 
 }
@@ -22,4 +21,15 @@ void AssetManager::AddFont(std::string fontId, const char* filePath, int fontSiz
 
 TTF_Font* AssetManager::GetFont(std::string fontId) {
     return fonts[fontId];
+}
+
+void AssetManager::AddSample(std::string sampledId, std::string filePath, int volume) {
+    samples.emplace(sampledId, AudioManager::LoadSample(filePath, volume));
+}
+
+AudioSample* AssetManager::GetSample(std::string sampleId) {
+    printf("Aue");
+    AudioSample* sample =  samples[sampleId];
+    printf("Aue");
+    return sample;
 }

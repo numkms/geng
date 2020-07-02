@@ -22,9 +22,7 @@ class UILabelComponent: public Component {
         SDL_Texture* texture;
     public:
         UILabelComponent(int x, int y, std::string text,  std::string fontName, const SDL_Color color, const SDL_Color hoverColor) {
-            std::cout << "1" << std::endl;
             this->position.x = x;
-            std::cout << "2" << std::endl;
             this->position.y = y;
             std::cout << "3" << std::endl;
             this->text = text;
@@ -43,13 +41,11 @@ class UILabelComponent: public Component {
 
         void Initialize() override {
             SetLabelText(text, fontName);
-            std::cout << "9" << std::endl;
         }
 
         void SetLabelText(std::string text, std::string fontName) {
-            std::cout << "10" << std::endl;
+            
             SDL_Surface* surface = TTF_RenderText_Blended(this->owner->GetManager()->GetScene()->GetAssetManager().GetFont(fontName), text.c_str(), currentColor);
-            std::cout << "11" << std::endl;
             texture = SDL_CreateTextureFromSurface(Game::renderer, surface);
             SDL_FreeSurface(surface);
             SDL_QueryTexture(texture, NULL, NULL, &position.w, &position.h);

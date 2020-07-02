@@ -5,6 +5,7 @@
 #include <SDL2/SDL_ttf.h>
 #include "EntityManager.h"
 #include "AssetManager.h"
+#include "AudioManager.h"
 
 class AssetManager;
 

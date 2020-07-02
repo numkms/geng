@@ -11,7 +11,9 @@
 #include "../Components/UILabelComponent.h"
 #include "../Components/ColliderComponent.h"
 #include "../Components/MouseControlComponent.h"
+#include "../AudioManager.h"
 #include "../SceneManager.h"
+
 #include "ArkanoidGameScene.h"
 
 extern SceneManager sceneManager;
@@ -26,7 +28,13 @@ public:
     void LoadMainMenu() {
         GetAssetManager().AddFont("Roboto17", "./assets/fonts/Roboto/Roboto-Black.ttf", 50);
         GetAssetManager().AddFont("Roboto14", "./assets/fonts/Roboto/Roboto-Black.ttf", 30);
-
+        GetAssetManager().AddSample("MainMenuTheme", "./assets/sounds/Track1.ogg", 50);
+        
+        Mix_HaltMusic();
+        
+        AudioSample * sample  = GetAssetManager().GetSample("MainMenuTheme");
+        sample->Play();
+        
         int menuWrapperTopPadding = 20;
         int menuWrpapperLeftPadding = 10;
         int titleBottomMargin = 70;
@@ -35,14 +43,14 @@ public:
         //Create an menu for 
         Entity& mainMenu(GetManager().AddEntity("MainMenu", UI));
         mainMenu.AddComponent<TransformComponent>(0, 0, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 1);
-        mainMenu.AddComponent<RectangleComponent>(WHITE_COLOR);
+        mainMenu.AddComponent<RectangleComponent>(REDWHITE_COLOR);
         mainMenu.AddComponent<UILabelComponent>(
             mainMenu.GetComponent<TransformComponent>()->position.x + menuWrapperTopPadding, 
             mainMenu.GetComponent<TransformComponent>()->position.y + menuWrpapperLeftPadding, 
             "ARKANOID WAPRO",
             "Roboto17",
-            BLUE_COLOR,
-            RED_COLOR
+            WHITE_COLOR,
+            LIGHTSEAGREEN_COLOR
         );
 
         
@@ -53,8 +61,8 @@ public:
             mainMenu.GetComponent<TransformComponent>()->position.y + titleBottomMargin + menuElementBottomMargin, 
             "Play", 
             "Roboto14",
-            BLUE_COLOR,
-            RED_COLOR
+            WHITE_COLOR,
+            LIGHTSEAGREEN_COLOR
         );
         
 
@@ -89,8 +97,8 @@ public:
             mainMenu.GetComponent<TransformComponent>()->position.y + titleBottomMargin + (menuElementBottomMargin * 2), 
             "Scoreboard",
             "Roboto14",
-            BLUE_COLOR,
-            RED_COLOR
+            WHITE_COLOR,
+            LIGHTSEAGREEN_COLOR
         );
 
         Entity& mainMenuExitItem(GetManager().AddEntity("MainMenuExitItem", UI));
@@ -99,8 +107,8 @@ public:
             mainMenu.GetComponent<TransformComponent>()->position.y + titleBottomMargin + (menuElementBottomMargin * 3), 
             "Exit",
             "Roboto14",
-            BLUE_COLOR,
-            RED_COLOR
+            WHITE_COLOR,
+            LIGHTSEAGREEN_COLOR
         );
 
 

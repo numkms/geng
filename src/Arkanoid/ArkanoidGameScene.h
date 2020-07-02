@@ -13,6 +13,8 @@
 #include "../Components/MouseControlComponent.h"
 #include "../Components/KeyboardControlComponent.h"
 
+class ArkanoidMenuScene;
+extern SceneManager sceneManager;
 class ArkanoidGameScene: public Scene 
 {
 private:
@@ -26,6 +28,11 @@ public:
     void LoadComponents() {
         GetAssetManager().AddFont("Roboto17", "./assets/fonts/Roboto/Roboto-Black.ttf", 50);
         GetAssetManager().AddFont("Roboto14", "./assets/fonts/Roboto/Roboto-Black.ttf", 30);
+
+        GetAssetManager().AddSample("GameTheme", "./assets/sounds/Track2.ogg", 50);
+        Mix_HaltMusic();
+        AudioSample * sample  = GetAssetManager().GetSample("GameTheme");
+        sample->Play();
         
         Entity& room(GetManager().AddEntity("Room", TILEMAP));
         room.AddComponent<TransformComponent>(0, 0, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 1);
@@ -59,8 +66,24 @@ public:
         platform.AddComponent<KeyboardControlComponent>(" ", "right", " ", "left", "space", glm::vec2(50, 0));
         MouseControlComponent& platformMouseControlComponent(platform.AddComponent<MouseControlComponent>());
         platformMouseControlComponent.BindMouseXToTransform();
+    }
 
 
+    void ProcessSceneInput() {
+        switch (Game::event.type) {
+            case SDL_QUIT: {
+        
+                break;
+            }
+            case SDL_KEYDOWN: {
+                if(Game::event.key.keysym.sym == SDLK_ESCAPE) {
+                    sceneManager.ShowScene<ArkanoidMenuScene>();
+                }
+            }
+            default: {
+                break;
+            }
+        }
     }
 
     void Initialize() override {
@@ -68,7 +91,14 @@ public:
         LoadComponents();
     }
 
-    
+    void Update(float deltaTime) override {
+        ProcessSceneInput();
+        Scene::Update(deltaTime);
+    }
+
+    void GoMenu() {
+
+    }
     void LoadLevel(int lvlNum) const {
         std::cout << "Loading level" + std::to_string(lvlNum) << std::endl;
     }
