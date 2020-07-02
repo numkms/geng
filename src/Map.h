@@ -2,6 +2,7 @@
 #define MAP_H
 
 #include <string>
+#include "EntityManager.h"
 
 class Map {
     private:
@@ -12,7 +13,7 @@ class Map {
         Map(std::string textureId, int scale, int tileSize);
         ~Map();
         void LoadMap(std::string filePath, int mapSizeX, int mapSizeY);
-        void AddTile(int sourceX, int sourceY, int x, int y);
+        void AddTile(int sourceX, int sourceY, int x, int y, EntityManager& manager);
 };
 
 #endif

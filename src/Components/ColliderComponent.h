@@ -3,15 +3,14 @@
 
 #include "../Component.h"
 #include "../Game.h"
-#include "../EntityManager.h"
 #include "TransformComponent.h"
 #include <string>
-
+#include "../Scene.h";
 class ColliderComponent: public Component
 {
 private:
     SDL_Texture* texture;
-    bool markedAsTarget;
+    bool markedAsTarget = false;
 public:
     std::string colliderTag;
     SDL_Rect collider;
@@ -55,7 +54,7 @@ public:
     }
 
     void MarkAsTarget(std::string assetName) {
-       texture = Game::assetManager->GetTexture(assetName);
+       texture = this->owner->GetManager()->GetScene()->GetAssetManager().GetTexture(assetName);
        markedAsTarget = true;
     }
 

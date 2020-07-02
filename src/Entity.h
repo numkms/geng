@@ -3,23 +3,22 @@
 #include <vector>
 #include "Component.h"
 #include <string>
-#include "EntityManager.h"
 #include <map>
 #include <iostream>
 #include "Constants.h"
-class EntityManager;
 class Component;
+class EntityManager;
 
 class Entity {
     private:
-        EntityManager& manager;
+        EntityManager* manager;
         bool isActive;
         std::vector<Component * > components;
         std::map<const std::type_info*, Component*> componentTypeMap;
     public:
         std::string name;
-        Entity (EntityManager& manager);
-        Entity (EntityManager& manager, std::string name, LayerType layer);
+        Entity (EntityManager* manager);
+        Entity (EntityManager* manager, std::string name, LayerType layer);
         LayerType layer;
         void Update(float deltaTime);
         void Render();
@@ -27,6 +26,7 @@ class Entity {
         bool IsActive() const;
         std::vector<Component*> ComponentsList() const;
     template <typename T, typename... TArgs>
+    
     T& AddComponent(TArgs... args) {
         T* newComponent(new T(std::forward<TArgs>(args)...));
         std::cout << "New component: OK" << std::endl;
@@ -54,6 +54,10 @@ class Entity {
             return true;
         }
         return false;
+    }
+
+    EntityManager* GetManager() {
+        return this->manager;
     }
 };
 

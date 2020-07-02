@@ -5,6 +5,7 @@
 #include "../AssetManager.h"
 #include "../TextureManager.h"
 #include "../Animation.h"
+#include "TransformComponent.h"
 
 class SpriteComponent: public Component {
     private:
@@ -67,7 +68,7 @@ class SpriteComponent: public Component {
         }
 
         void SetTexture(std::string assetTextureId) {
-            texture = Game::assetManager->GetTexture(assetTextureId);
+            texture = owner->GetManager()->GetScene()->GetAssetManager().GetTexture(assetTextureId);
         }
 
         void Initialize() override {

@@ -5,10 +5,13 @@
 #include "Constants.h"
 #include <vector>
 
+class Scene;
 class EntityManager {
     private:
         std::vector<Entity *> entities;
     public: 
+        Scene* scene;
+        EntityManager(Scene* scene);
         void ClearData();
         void Update(float deltaTime);
         void Render();
@@ -20,7 +23,7 @@ class EntityManager {
         void PrintEntityTree();
         CollisionType CheckEntityCollisions() const;
         void DestroyInactiveEntities();
-
+        Scene* GetScene();
 };
 
 #endif

@@ -1,10 +1,8 @@
 #include "Map.h"
 #include "Game.h"
-#include "EntityManager.h"
 #include "./Components/TileComponent.h"
 #include <fstream>
 #include <iostream>
-extern EntityManager manager;
 
 Map::Map(std::string textureId, int scale, int tileSize) {
     this->textureId = textureId;
@@ -23,14 +21,14 @@ void Map::LoadMap(std::string filePath, int mapSizeX, int mapSizeY) {
             std::cout << ch << std::endl;
             mapFile.get(ch);
             int sourceRectX = atoi(&ch) * tileSize;
-            AddTile(sourceRectX, sourceRectY, x * (scale * tileSize), y * (scale * tileSize));
+            // AddTile(sourceRectX, sourceRectY, x * (scale * tileSize), y * (scale * tileSize), );
             mapFile.ignore();  
         }
     }
     mapFile.close();
 }
 
-void Map::AddTile(int sourceRectX, int sourceRectY, int x, int y) {
+void Map::AddTile(int sourceRectX, int sourceRectY, int x, int y, EntityManager &manager) {
     Entity& newTile(manager.AddEntity("Tile", TILEMAP));
     newTile.AddComponent<TileComponent>(sourceRectX, sourceRectY, x, y, tileSize, scale, textureId);
 }
