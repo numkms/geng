@@ -27,8 +27,8 @@ public:
     void ShowScene() {
         HideAllScenes();
         T* scene =  static_cast<T*>(sceneByType[&typeid(T)]);        
-        scene->isHidden = false;
         scene->Initialize();
+        scene->isHidden = false;
     }
 
     void HideAllScenes() {

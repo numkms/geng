@@ -7,10 +7,12 @@
 #include <string>
 class AudioSample {
 public:
-    AudioSample(const std::string &path, int volume);
+    AudioSample(const std::string &path, int volume, bool isEffect);
     void Play();
     void SetVolume(int volume);
 private:
+    bool isEffect;
     Mix_Music * music;
+    Mix_Chunk * effect;
 };
 #endif

@@ -21,7 +21,7 @@ class AssetManager {
         void ClearData();
         void AddTexture(std::string textureId, const char* filePath);
         void AddFont(std::string fontId, const char* filePath, int fontSize);
-        void AddSample(std::string sampleId, std::string filePath, int volume);
+        void AddSample(std::string sampleId, std::string filePath, int volume, bool isEffect);
         
         SDL_Texture* GetTexture(std::string textureId);
         TTF_Font* GetFont(std::string fontId);

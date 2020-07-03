@@ -28,7 +28,7 @@ public:
     void LoadMainMenu() {
         GetAssetManager().AddFont("Roboto17", "./assets/fonts/Roboto/Roboto-Black.ttf", 50);
         GetAssetManager().AddFont("Roboto14", "./assets/fonts/Roboto/Roboto-Black.ttf", 30);
-        GetAssetManager().AddSample("MainMenuTheme", "./assets/sounds/Track1.ogg", 50);
+        GetAssetManager().AddSample("MainMenuTheme", "./assets/sounds/Track1.ogg", 50, false);
         
         Mix_HaltMusic();
         

@@ -4,6 +4,8 @@
 #include "../../lib/glm/glm.hpp"
 #include "../Game.h"
 #include "SDL2/SDL.h"
+
+
 class TransformComponent: public Component {
     public:
         glm::vec2 position;
@@ -27,21 +29,21 @@ class TransformComponent: public Component {
         void Update(float deltaTime) override {
             float nextPositionX = position.x + velocity.x * deltaTime;
             float nextPositionY = position.y + velocity.y * deltaTime;
-            if(nextPositionX >= WINDOW_WIDTH - width) {
-                nextPositionX = WINDOW_WIDTH - width;
-            } 
+            // if(nextPositionX >= WINDOW_WIDTH - width) {
+            //     nextPositionX = WINDOW_WIDTH - width;
+            // } 
 
-            if(nextPositionX <= 0) {
-                nextPositionX = 0;
-            }
+            // if(nextPositionX <= 0) {
+            //     nextPositionX = 0;
+            // }
 
-            if(nextPositionY >= WINDOW_HEIGHT) {
-                nextPositionY = WINDOW_HEIGHT;
-            } 
+            // if(nextPositionY >= WINDOW_HEIGHT) {
+            //     nextPositionY = WINDOW_HEIGHT;
+            // } 
 
-            if(nextPositionY <= 0) {
-                nextPositionY = 0;
-            }
+            // if(nextPositionY <= 0) {
+            //     nextPositionY = 0;
+            // }
 
             position.x = nextPositionX;
             position.y = nextPositionY;

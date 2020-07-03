@@ -49,6 +49,7 @@ class UILabelComponent: public Component {
             texture = SDL_CreateTextureFromSurface(Game::renderer, surface);
             SDL_FreeSurface(surface);
             SDL_QueryTexture(texture, NULL, NULL, &position.w, &position.h);
+            
         }
 
 
@@ -61,6 +62,7 @@ class UILabelComponent: public Component {
         }
 
         void Update(float deltaTime) override{
+            SDL_DestroyTexture(texture);
             SetLabelText(text, fontName);
         }
 

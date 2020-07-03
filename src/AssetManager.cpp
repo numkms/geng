@@ -23,13 +23,11 @@ TTF_Font* AssetManager::GetFont(std::string fontId) {
     return fonts[fontId];
 }
 
-void AssetManager::AddSample(std::string sampledId, std::string filePath, int volume) {
-    samples.emplace(sampledId, AudioManager::LoadSample(filePath, volume));
+void AssetManager::AddSample(std::string sampledId, std::string filePath, int volume, bool isEffect) {
+    samples.emplace(sampledId, AudioManager::LoadSample(filePath, volume, isEffect));
 }
 
 AudioSample* AssetManager::GetSample(std::string sampleId) {
-    printf("Aue");
     AudioSample* sample =  samples[sampleId];
-    printf("Aue");
     return sample;
 }

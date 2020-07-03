@@ -16,8 +16,10 @@ class Scene {
     Scene() {
         std::cout << "Initilize entity manager" << std::endl;
         manager = new EntityManager(this);
+        std::cout << "Initilize entity manager: OK" << std::endl;
         std::cout << "Initilize asset manager" << std::endl;
         assetManager = new AssetManager(this);
+        std::cout << "Initilize asset manage: OK" << std::endl;
     };
     virtual void Initialize() {
         
