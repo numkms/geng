@@ -9,6 +9,7 @@ const unsigned int WINDOW_HEIGHT = 600;
 const unsigned int FPS = 60;
 const unsigned int FRAME_TARGET_TIME = 1000 / FPS;
 
+const std::string SCORE_FILE_PATH = "./score";
 
 const SDL_Color WHITE_COLOR = {255, 255, 255, 255};
 const SDL_Color GREEN_COLOR = {0, 255, 0, 255};
@@ -52,4 +53,5 @@ enum LayerType {
 
 const unsigned int NUM_LAYERS = 6;
 
+const bool SETTING_IS_SOUND_ENABLED = true;
 #endif

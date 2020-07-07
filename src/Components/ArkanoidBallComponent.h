@@ -10,11 +10,12 @@ const std::string DIRECTION_NO = "NO";
 
 class ArkanoidBallComponent: public Component
 {
+public:
+    int velocity;
 private:
     TransformComponent* transform;
     TransformComponent* roomTransform;
-    
-    int velocity;
+
     int originVelocity;
     
     std::string directionX = DIRECTION_NO;
@@ -58,12 +59,13 @@ private:
         AudioSample* sample(this->owner->GetManager()->GetScene()->GetAssetManager().GetSample("BoxCollisionSound"));
         sample->Play();
     }
+
     void SetNewPosition(float deltaTime) {
         if(directionX == "LEFT") {
-            this->transform->position.x -= velocity * deltaTime;
+            this->transform->position.x -= (velocity / 2) * deltaTime;
         }
         if(directionX == "RIGHT") {
-            this->transform->position.x += velocity * deltaTime;
+            this->transform->position.x += (velocity / 2) * deltaTime;
         }
         if(directionY == "TOP") {
             this->transform->position.y -= velocity * deltaTime;
@@ -83,8 +85,25 @@ public:
     ArkanoidBallComponent(int velocity, TransformComponent* roomTransform);
     
     void MirrorDirections() {
+        MirrorXDirection();
+        MirrorYDirection();
+    }
+    
+    void MirrorXDirection() {
+        directionX = directionX == "LEFT" ? "RIGHT" : "LEFT";
+    }
+
+    void MirrorYDirection() {
         directionY = directionY == "TOP" ? "BOTTOM" : "TOP";
-        // directionX = directionY == "LEFT" ? "RIGHT" : "LEFT";
+    }
+
+    void SetDirection(std::string x, std::string y) {
+        directionX = x;
+        directionY = y;
+    }
+
+    std::tuple<std::string, std::string> GetDirection() {
+        return std::tuple<std::string, std::string>(directionX, directionY);
     }
 
     void Play() {

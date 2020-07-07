@@ -61,7 +61,7 @@ public:
         SDL_GetMouseState(&mouseRect.x, &mouseRect.y);
             if(owner->HasComponent<TransformComponent>()) {
                 if(mouseXBindedToTransform) {
-                transform->position.x = mouseRect.x - transform->width / 2;
+                transform->position.x = mouseRect.x - transform->width;
             }
 
             if(mouseYBindedToTransform) {

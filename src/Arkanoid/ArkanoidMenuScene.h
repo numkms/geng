@@ -15,6 +15,7 @@
 #include "../SceneManager.h"
 
 #include "ArkanoidGameScene.h"
+#include "ArkanoidScoreboardScene.h"
 
 extern SceneManager sceneManager;
 class ArkanoidMenuScene: public Scene 
@@ -23,6 +24,15 @@ private:
 public:    
     void NewGame() {
         sceneManager.ShowScene<ArkanoidGameScene>();
+    }
+
+    void Scoreboard() {
+        sceneManager.ShowScene<ArkanoidScoreboardScene>();
+    }
+
+    void Exit() {
+        Game::isRunning = false;
+
     }
 
     void LoadMainMenu() {
@@ -100,9 +110,30 @@ public:
             WHITE_COLOR,
             LIGHTSEAGREEN_COLOR
         );
+        mainMenuScoreboardItem.AddComponent<TransformComponent>(
+            mainMenu.GetComponent<TransformComponent>()->position.x + 20,
+            mainMenu.GetComponent<TransformComponent>()->position.y + titleBottomMargin + (menuElementBottomMargin * 2), 
+            0,
+            0,
+            200,
+            30,
+            1
+        );
+
+        mainMenuScoreboardItem.AddComponent<ColliderComponent>(
+            "MENU_ITEM", 
+            mainMenu.GetComponent<TransformComponent>()->position.x + 20,
+            mainMenu.GetComponent<TransformComponent>()->position.y + titleBottomMargin + (menuElementBottomMargin * 2),
+            200,
+            30
+        );
+        MouseControlComponent& mainMenuScoreboardItemMouseControlComponent(mainMenuScoreboardItem.AddComponent<MouseControlComponent>());
+        mainMenuScoreboardItemMouseControlComponent.AddCallback("CLICK", [&]{
+            this->Scoreboard();
+        });
 
         Entity& mainMenuExitItem(GetManager().AddEntity("MainMenuExitItem", UI));
-        mainMenuScoreboardItem.AddComponent<UILabelComponent>(
+        mainMenuExitItem.AddComponent<UILabelComponent>(
             mainMenu.GetComponent<TransformComponent>()->position.x + 20, 
             mainMenu.GetComponent<TransformComponent>()->position.y + titleBottomMargin + (menuElementBottomMargin * 3), 
             "Exit",
@@ -110,6 +141,27 @@ public:
             WHITE_COLOR,
             LIGHTSEAGREEN_COLOR
         );
+         mainMenuExitItem.AddComponent<TransformComponent>(
+            mainMenu.GetComponent<TransformComponent>()->position.x + 20,
+            mainMenu.GetComponent<TransformComponent>()->position.y + titleBottomMargin + (menuElementBottomMargin * 3), 
+            0,
+            0,
+            200,
+            30,
+            1
+        );
+
+        mainMenuExitItem.AddComponent<ColliderComponent>(
+            "MENU_ITEM", 
+            mainMenu.GetComponent<TransformComponent>()->position.x + 20,
+            mainMenu.GetComponent<TransformComponent>()->position.y + titleBottomMargin + (menuElementBottomMargin * 3),
+            200,
+            30
+        );
+        MouseControlComponent& mainMenuExitItemMouseControlComponent(mainMenuExitItem.AddComponent<MouseControlComponent>());
+        mainMenuExitItemMouseControlComponent.AddCallback("CLICK", [&]{
+            this->Exit();
+        });
 
 
         // std::vector<Entity > menuElements;

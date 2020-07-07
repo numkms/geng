@@ -11,6 +11,7 @@ class Scene {
     protected:
     EntityManager* manager;
     AssetManager* assetManager;
+    
     public:
     bool isHidden = false;
     Scene() {
@@ -22,7 +23,9 @@ class Scene {
         std::cout << "Initilize asset manage: OK" << std::endl;
     };
     virtual void Initialize() {
-        
+        for(auto& entity: manager->GetEntities()) {
+            entity->Destroy();
+        }
     };
     virtual void Update(float deltaTime) {
         manager->Update(deltaTime);
