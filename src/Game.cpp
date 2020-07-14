@@ -6,15 +6,26 @@
 #include "Map.h"
 #include "Arkanoid/ArkanoidMenuScene.h"
 #include "Arkanoid/ArkanoidGameScene.h"
+#include "Arkanoid/ArkanoidScoreboardScene.h"
 #include "SceneManager.h"
+#include <SDL2/SDL_mixer.h>
 SceneManager sceneManager;
 
 SDL_Renderer* Game::renderer;
 SDL_Event Game::event;
 SDL_Rect Game::camera = { 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
+
+Mix_Music *gMusic = NULL;
+//The sound effects that will be used
+Mix_Chunk *gScratch = NULL;
+Mix_Chunk *gHigh = NULL;
+Mix_Chunk *gMedium = NULL;
+Mix_Chunk *gLow = NULL;
+bool Game::isRunning;
+
 Map* map;
 Game::Game() {
-    this->isRunning = false;
+    Game::isRunning = false;
 }
 
 Game::~Game() {
@@ -22,7 +33,7 @@ Game::~Game() {
 }
 
 bool Game::IsRunning() const {
-    return this->isRunning;
+    return Game::isRunning;
 }
 
 void Game::Initialize(int width, int height) {
@@ -45,6 +56,10 @@ void Game::Initialize(int width, int height) {
         return;
     }
 
+    if(SETTING_IS_SOUND_ENABLED && Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 ) {
+        printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+    }
+
     if(!window) {
         std::cerr << "Error creating SDL window" << std::endl;
         return;
@@ -58,23 +73,21 @@ void Game::Initialize(int width, int height) {
     }
     sceneManager.AddScene<ArkanoidMenuScene>();
     sceneManager.AddScene<ArkanoidGameScene>();
+    sceneManager.AddScene<ArkanoidScoreboardScene>();
     sceneManager.ShowScene<ArkanoidMenuScene>();
-    isRunning = true;
+    Game::isRunning = true;
     return;
+
 }
 
 void Game::ProcessInput() {
      SDL_PollEvent(&event);
      switch (event.type) {
          case SDL_QUIT: {
-             isRunning = false;
+             Game::isRunning = false;
              break;
          }
-         case SDL_KEYDOWN: {
-             if(event.key.keysym.sym == SDLK_ESCAPE) {
-                 isRunning = false;
-             }
-         }
+
          default: {
              break;
          }
@@ -85,7 +98,6 @@ void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
     SDL_RenderClear(renderer);
 
-    // TODO: Here we need check do we have scenes to render or not and if not return 
     sceneManager.Render();
 
     SDL_SetRenderDrawColor(renderer, 255,255,255,255);
@@ -94,12 +106,12 @@ void Game::Render() {
 
 void Game::ProcessGameOver() {
     std::cout << "Process game over" << std::endl;
-    isRunning = false;
+    Game::isRunning = false;
 }
 
 void Game::ProcessNextLevel(int levelNumber) {
     std::cout << "Process next level" << std::endl;
-    isRunning = false;
+    Game::isRunning = false;
 }
 
 void Game::Update() {
@@ -124,5 +136,6 @@ void Game::Update() {
 void Game::Destroy() {
    SDL_DestroyRenderer(renderer);
    SDL_DestroyWindow(window);
+   Mix_Quit();
    SDL_Quit();
 }

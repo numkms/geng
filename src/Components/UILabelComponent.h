@@ -20,39 +20,28 @@ class UILabelComponent: public Component {
         SDL_Color hoverColor;
         SDL_Color currentColor; 
         SDL_Texture* texture;
+        std::string newText = "";
     public:
-        UILabelComponent(int x, int y, std::string text,  std::string fontName, const SDL_Color color, const SDL_Color hoverColor) {
-            std::cout << "1" << std::endl;
-            this->position.x = x;
-            std::cout << "2" << std::endl;
-            this->position.y = y;
-            std::cout << "3" << std::endl;
-            this->text = text;
-            std::cout << "4" << std::endl;
-            this->fontName = fontName;
-            std::cout << "5" << std::endl;
-            this->color = color;
-            std::cout << "6" << std::endl;
-            this->hoverColor = hoverColor;
-            std::cout << "7" << std::endl;
-            this->currentColor = color;
-            std::cout << "8" << std::endl;
-            
-            
-        } 
+        UILabelComponent(int x, int y, std::string text,  std::string fontName, const SDL_Color color, const SDL_Color hoverColor);
 
         void Initialize() override {
             SetLabelText(text, fontName);
-            std::cout << "9" << std::endl;
+        }
+
+        void SetText(const std::string& text) {
+            newText = text;
         }
 
         void SetLabelText(std::string text, std::string fontName) {
-            std::cout << "10" << std::endl;
-            SDL_Surface* surface = TTF_RenderText_Blended(this->owner->GetManager()->GetScene()->GetAssetManager().GetFont(fontName), text.c_str(), currentColor);
-            std::cout << "11" << std::endl;
+            SDL_Surface* surface = TTF_RenderText_Blended(
+                this->owner->GetManager()->GetScene()->GetAssetManager().GetFont(fontName),
+                 text.c_str(),
+                  currentColor
+            );
             texture = SDL_CreateTextureFromSurface(Game::renderer, surface);
             SDL_FreeSurface(surface);
             SDL_QueryTexture(texture, NULL, NULL, &position.w, &position.h);
+            
         }
 
 
@@ -65,7 +54,16 @@ class UILabelComponent: public Component {
         }
 
         void Update(float deltaTime) override{
-            SetLabelText(text, fontName);
+            SDL_DestroyTexture(texture);
+            if(this->owner->HasComponent<TransformComponent>()) {
+                position = {
+                    (int) this->owner->GetComponent<TransformComponent>()->position.x,
+                    (int) this->owner->GetComponent<TransformComponent>()->position.y,
+                    position.w,
+                    position.h
+                };
+            }
+            SetLabelText(newText == "" ?  text : newText, fontName);
         }
 
         void Render() override {
@@ -73,4 +71,6 @@ class UILabelComponent: public Component {
         }
     
 };
+UILabelComponent::UILabelComponent(int x, int y, std::string text,  std::string fontName, const SDL_Color color, const SDL_Color hoverColor)
+: position({x,y}), text(text), fontName(fontName), color(color), hoverColor(hoverColor), currentColor(color)  {}
 #endif

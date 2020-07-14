@@ -20,7 +20,7 @@ public:
     }
 
     void Update(float deltaTime) override {
-        rectangle = {static_cast<int>(transform->position.x), static_cast<int>(transform->position.y), transform->width, transform->height};
+        rectangle = {static_cast<int>(transform->position.x), static_cast<int>(transform->position.y), transform->width * transform->scale, transform->height * transform->scale};
     } 
 
     void Render() override {

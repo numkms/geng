@@ -12,6 +12,9 @@ class MouseControlComponent: public Component
 private:
     std::map<std::string, std::function<void()>> callbacks;
     std::vector<std::string> currentEvents = {};
+    bool mouseXBindedToTransform = false;
+    bool mouseYBindedToTransform = false;
+    TransformComponent* transform;
     SDL_Rect mouseRect;
 
     void AddToCurrentEventsList(std::string eventType) {
@@ -36,15 +39,36 @@ public:
 
     void Initialize() {
         mouseRect = {0, 0, 1, 1};
+        if(owner->HasComponent<TransformComponent>()) {
+            transform = owner->GetComponent<TransformComponent>();
+        }
     }
     
     void AddCallback(std::string eventType, std::function<void()> lambda) {
          callbacks[eventType] = lambda;
     }
 
-    void Update(float deltaTime) override {
-        SDL_GetMouseState(&mouseRect.x, &mouseRect.y);
+    void BindMouseXToTransform() {
+        mouseXBindedToTransform = true;
+    }
 
+    void BindMouseYToTransform() {
+        mouseYBindedToTransform = true;
+    }
+
+    void Update(float deltaTime) override {
+        
+        SDL_GetMouseState(&mouseRect.x, &mouseRect.y);
+            if(owner->HasComponent<TransformComponent>()) {
+                if(mouseXBindedToTransform) {
+                transform->position.x = mouseRect.x - transform->width;
+            }
+
+            if(mouseYBindedToTransform) {
+                transform->position.y = mouseRect.y;
+            }
+        }
+        
         //HOVERING LOGIC 
         if(this->owner->HasComponent<ColliderComponent>()) {
              if(Collision::CheckRectangleCollision(this->owner->GetComponent<ColliderComponent>()->collider, mouseRect)) {
